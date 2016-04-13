@@ -1,5 +1,7 @@
 #! /usr/bin/python
 '''
+    Data Service for Simple Superhero Voting Application
+
     This is the Data Service for a basic microservice demo application.
     The application was designed to provide a simple demo for Cisco Mantl
 
