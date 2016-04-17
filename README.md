@@ -35,4 +35,23 @@ Required
 
 # Accessing
 
-    http://localhost:5000/hero_list
+Initial and Basic APIs
+* Basic List of Hero Choices
+  * `curl http://localhost:5000/hero_list`
+* Current results calculations
+  * `curl http://localhost:5000/results`
+* Place a vote for an option
+  * `curl http://localhost:5000/vote/<HERO>`
+
+Additional APIs for Option Management
+* Get the current list of options for voting
+  * `curl -X GET http://localhost:5000/options`
+* Add a new option to the list
+  * `curl -X PUT http://localhost:5000/options -d '{"option":"Deadpool"}'`
+* Replace the entire options list
+  * `curl-X POST -H "key: New List" http://localhost:5000/options -d @sample_post.json`
+  * Requires a Header 'key' to be sent with any value accepted
+  * Data should be of same format as a GET request
+* Delete a single option from the list
+  * `curl -X DELETE -H "key: Delete" http://localhost:5000/options/Deadpool`
+  * Requires a Header 'key' to be sent with any value accepted
