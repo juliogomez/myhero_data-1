@@ -208,7 +208,7 @@ if __name__=='__main__':
     data_key = args.datasecret
     # print "Arg Data Key: " + str(data_key)
     if (data_key == None):
-        data_key = os.getenv("myhero_app_key")
+        data_key = os.getenv("myhero_data_key")
         # print "Env Data Key: " + str(data_key)
         if (data_key == None):
             get_data_key = raw_input("What is the data server authentication key? ")
