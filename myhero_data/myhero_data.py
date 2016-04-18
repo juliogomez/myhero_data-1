@@ -9,7 +9,7 @@
 __author__ = 'hapresto'
 
 from flask import Flask, make_response, request, jsonify, Response
-import datetime, json
+import datetime, json, sys, os
 from collections import Counter
 
 app = Flask(__name__)
@@ -25,12 +25,23 @@ def hero_list():
     resp = make_response(jsonify(heros=hero_list))
     return resp
 
-@app.route("/vote/<hero>")
+@app.route("/vote/<hero>", methods=["GET", "POST"])
 def vote(hero):
-    with open("votes.txt", "a") as f:
-        f.write(hero + "\n")
-    resp = make_response(jsonify(result="1"))
-    return resp
+    if request.method == "GET":
+        with open("votes.txt", "a") as f:
+            f.write(hero + "\n")
+        resp = make_response(jsonify(result="1"))
+        return resp
+    if request.method == "POST":
+        # Verify that the request is propery authorized
+        authz = valid_request_check(request)
+        if not authz[0]:
+            return authz[1]
+        with open("votes.txt", "a") as f:
+            f.write(hero + "\n")
+        resp = make_response(jsonify(result="1"))
+        return resp
+
 
 @app.route("/results")
 def results():
@@ -47,6 +58,10 @@ def options_route():
     '''
     Methods used to view options, add new option, and replace options.
     '''
+    authz = valid_request_check(request)
+    if not authz[0]:
+        return authz[1]
+
     if request.method == "GET":
         options = {"options":option_list()}
         status = 200
@@ -63,17 +78,6 @@ def options_route():
             resp = Response(json.dumps(error), content_type='application/json', status = status)
             return resp
     if request.method == "POST":
-        # Simple authorization/verification
-        # Require key to be sent in header
-        headers = request.headers
-        try:
-            print("POST request key: " + headers["key"])
-        except :
-            error = {"Error": "Method requires authorization key."}
-            print error
-            status = 400
-            resp = Response(json.dumps(error), content_type='application/json', status=status)
-            return resp
         try:
             data = request.get_json(force=True)
             # Verify that data is of good format
@@ -91,8 +95,7 @@ def options_route():
             #     "Ironman"
             # ]
             # }
-            print("New Options:")
-            print(data["options"])
+            print("New Options:" + str(data["options"]))
             options = {"options":replace_options(data["options"])}
             status = 201
 
@@ -113,19 +116,11 @@ def option_delete_route(option):
     '''
     Delete an option from the the option_list.
     '''
-    if request.method == "DELETE":
-        # Simple authorization/verification
-        # Require key to be sent in header
-        headers = request.headers
-        try:
-            print("Delete request key: " + headers["key"])
-        except :
-            error = {"Error": "Method requires authorization key."}
-            print error
-            status = 400
-            resp = Response(json.dumps(error), content_type='application/json', status=status)
-            return resp
+    authz = valid_request_check(request)
+    if not authz[0]:
+        return authz[1]
 
+    if request.method == "DELETE":
         options = {"options": remove_option(option)}
         status = 202
         resp = Response(
@@ -139,6 +134,22 @@ def option_delete_route(option):
         resp = Response(json.dumps(error), content_type='application/json', status=status)
         return resp
 
+def valid_request_check(request):
+    try:
+        if request.headers["key"] == data_key:
+            return (True, "")
+        else:
+            error = {"Error": "Invalid Key Provided."}
+            print error
+            status = 401
+            resp = Response(json.dumps(error), content_type='application/json', status=status)
+            return (False, resp)
+    except KeyError:
+        error = {"Error": "Method requires authorization key."}
+        print error
+        status = 400
+        resp = Response(json.dumps(error), content_type='application/json', status=status)
+        return (False, resp)
 
 def option_list():
     '''
@@ -185,7 +196,26 @@ def replace_options(options):
     return option_list()
 
 if __name__=='__main__':
+    from argparse import ArgumentParser
 
+    parser = ArgumentParser("MyHero Data Service")
+    parser.add_argument(
+        "-s", "--datasecret", help="Data Server Key Expected in API Calls", required=False
+    )
+
+    args = parser.parse_args()
+
+    data_key = args.datasecret
+    # print "Arg Data Key: " + str(data_key)
+    if (data_key == None):
+        data_key = os.getenv("myhero_app_key")
+        # print "Env Data Key: " + str(data_key)
+        if (data_key == None):
+            get_data_key = raw_input("What is the data server authentication key? ")
+            # print "Input Data Key: " + str(get_data_key)
+            data_key = get_data_key
+    print "Data Server Key: " + data_key
+    sys.stderr.write("Data Server Key: " + data_key + "\n")
 
     app.run(debug=True, host='0.0.0.0', port=int("5000"))
 

@@ -8,3 +8,4 @@ Thor
 Green Lantern
 Star Lord
 Ironman
+Wonder Woman
