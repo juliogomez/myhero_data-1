@@ -24,25 +24,26 @@ Required
 
 * flask
 * ArgumentParser
+* requests
 
-# Installation
+# Environment Installation
 
     pip install -r requirements.txt
 
-# Usage
+# Basic Usage
 
 In order to run, the service needs 1 piece of information to be provided:
-1. Data Server Authentication Key to Require
+* Data Server Authentication Key to Require
 
 This detail can be provided in one of three ways.
-1. As a command line argument
-    - `python myhero_data/myhero_data.py --datasecret "DATA AUTH KEY" `
-2. As environment variables
-    - `export myhero_data_key="DATA AUTH KEY"`
-    - `python myhero_data/myhero_data.py`
-3. As raw input when the application is run
-    - `python myhero_data/myhero_data.py`
-    - `Data Server Key: DATA AUTH KEY`
+* As a command line argument
+  - `python myhero_data/myhero_data.py --datasecret "DATA AUTH KEY" `
+* As environment variables
+  - `export myhero_data_key="DATA AUTH KEY"`
+  - `python myhero_data/myhero_data.py`
+* As raw input when the application is run
+  - `python myhero_data/myhero_data.py`
+  - `Data Server Key: DATA AUTH KEY`
 
 A command line argument overrides an environment variable, and raw input is only used if neither of the other two options provide needed details.
 
@@ -73,3 +74,16 @@ These newer APIs require authentication as well as support more features
   * `curl -X POST -H "key: DATA AUTH KEY" http://localhost:5000/vote/Deadpool`
 * Get current results
   * `curl -X GET -H "key: DATA AUTH KEY" http://localhost:5000/results`
+
+# Local Development with Vagrant
+
+I've included the configuration files needed to do local development with Vagrant in the repo.  Vagrant will still use Docker for local development and is configured to spin up a CentOS7 host VM for running the container.
+
+To start local development run:
+* `vagrant up`
+  - You may need to run this twice.  The first time to start the docker host, and the second to start the container.
+*  Now you can interact with the API or interface at localhost:15000 (configured in Vagrantfile and Vagrantfile.host)
+  - example:  from your local machine `curl -H "key: DevData" http://localhost:15000/options`
+  - Environment Variables are configured in Vagrantfile for development
+
+Each of the services in the application (i.e. myhero_web, myhero_app, and myhero_data) include Vagrant support to allow working locally on all three simultaneously.
