@@ -95,7 +95,7 @@ def options_route():
             #     "Ironman"
             # ]
             # }
-            print("New Options:" + str(data["options"]))
+            sys.stderr.write("New Options:" + str(data["options"]) + "\n")
             options = {"options":replace_options(data["options"])}
             status = 201
 
@@ -140,13 +140,13 @@ def valid_request_check(request):
             return (True, "")
         else:
             error = {"Error": "Invalid Key Provided."}
-            print error
+            sys.stderr.write(error + "\n")
             status = 401
             resp = Response(json.dumps(error), content_type='application/json', status=status)
             return (False, resp)
     except KeyError:
         error = {"Error": "Method requires authorization key."}
-        print error
+        sys.stderr.write(error + "\n")
         status = 400
         resp = Response(json.dumps(error), content_type='application/json', status=status)
         return (False, resp)
@@ -214,7 +214,7 @@ if __name__=='__main__':
             get_data_key = raw_input("What is the data server authentication key? ")
             # print "Input Data Key: " + str(get_data_key)
             data_key = get_data_key
-    print "Data Server Key: " + data_key
+    # print "Data Server Key: " + data_key
     sys.stderr.write("Data Server Key: " + data_key + "\n")
 
     app.run(debug=True, host='0.0.0.0', port=int("5000"))
