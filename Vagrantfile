@@ -32,9 +32,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # If omitted, no ports are mapped!
     docker.ports = ['5000:5000']
 
+    docker.volumes = ["/home/vagrant:/app/data"]
+
     # Environment Variables for Development
     docker.env = {
-      "myhero_data_key" => "DevData"
+      "myhero_data_key" => "DevData",
+      "myhero_data_dir" => "/app/data/"
     }
 
     # Specify a friendly name for the Docker container

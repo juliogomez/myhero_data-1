@@ -13,7 +13,8 @@ import datetime, json, sys, os
 from collections import Counter
 
 app = Flask(__name__)
-data_file = "heros.txt"
+data_dir = "./"
+data_file = data_dir + "heros.txt"
 
 @app.route("/hero_list")
 def hero_list():
@@ -28,7 +29,7 @@ def hero_list():
 @app.route("/vote/<hero>", methods=["GET", "POST"])
 def vote(hero):
     if request.method == "GET":
-        with open("votes.txt", "a") as f:
+        with open(data_dir + "votes.txt", "a") as f:
             f.write(hero + "\n")
         resp = make_response(jsonify(result="1"))
         return resp
@@ -37,7 +38,7 @@ def vote(hero):
         authz = valid_request_check(request)
         if not authz[0]:
             return authz[1]
-        with open("votes.txt", "a") as f:
+        with open(data_dir + "votes.txt", "a") as f:
             f.write(hero + "\n")
         resp = make_response(jsonify(result="1"))
         return resp
@@ -46,7 +47,7 @@ def vote(hero):
 @app.route("/results")
 def results():
     tally = Counter()
-    with open("votes.txt") as f:
+    with open(data_dir + "votes.txt") as f:
         for line in f:
             line = line.rstrip()
             tally[line] += 1
@@ -202,6 +203,9 @@ if __name__=='__main__':
     parser.add_argument(
         "-s", "--datasecret", help="Data Server Key Expected in API Calls", required=False
     )
+    parser.add_argument(
+        "--datadir", help="Directory to use for Data", required=False
+    )
 
     args = parser.parse_args()
 
@@ -216,6 +220,31 @@ if __name__=='__main__':
             data_key = get_data_key
     # print "Data Server Key: " + data_key
     sys.stderr.write("Data Server Key: " + data_key + "\n")
+
+    arg_data_dir = args.datadir
+    if (arg_data_dir == None):
+        arg_data_dir = os.getenv("myhero_data_dir")
+        if (arg_data_dir == None):
+            print("Setting Data Directory to default")
+            arg_data_dir = "./"
+
+    # Check if data directory exists
+    if (os.path.isdir(arg_data_dir)):
+        # Director exists, use it
+        print("Valid Data Directory Found.")
+        data_dir = arg_data_dir
+    else:
+        print("Given Data Directory Invalid.  Using Default.")
+    sys.stderr.write("Data Directory: " + data_dir + "\n")
+
+    data_file = data_dir + "myhero_options.txt"
+
+    # Check if Options File Exists
+    if (not os.path.isfile(data_file)):
+        #File doesn't exist, copy sample
+        print("Options file missing, Creating default.  ")
+        from shutil import copyfile
+        copyfile("sample_heros.txt", data_file)
 
     app.run(debug=True, host='0.0.0.0', port=int("5000"))
 
