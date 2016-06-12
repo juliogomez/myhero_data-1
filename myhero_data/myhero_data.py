@@ -29,7 +29,7 @@ def hero_list():
 @app.route("/vote/<hero>", methods=["GET", "POST"])
 def vote(hero):
     if request.method == "GET":
-        with open("votes.txt", "a") as f:
+        with open(data_dir + "votes.txt", "a") as f:
             f.write(hero + "\n")
         resp = make_response(jsonify(result="1"))
         return resp
@@ -38,7 +38,7 @@ def vote(hero):
         authz = valid_request_check(request)
         if not authz[0]:
             return authz[1]
-        with open("votes.txt", "a") as f:
+        with open(data_dir + "votes.txt", "a") as f:
             f.write(hero + "\n")
         resp = make_response(jsonify(result="1"))
         return resp
@@ -47,7 +47,7 @@ def vote(hero):
 @app.route("/results")
 def results():
     tally = Counter()
-    with open("votes.txt") as f:
+    with open(data_dir + "votes.txt") as f:
         for line in f:
             line = line.rstrip()
             tally[line] += 1
@@ -221,7 +221,6 @@ if __name__=='__main__':
     # print "Data Server Key: " + data_key
     sys.stderr.write("Data Server Key: " + data_key + "\n")
 
-
     arg_data_dir = args.datadir
     if (arg_data_dir == None):
         arg_data_dir = os.getenv("myhero_data_dir")
@@ -229,7 +228,7 @@ if __name__=='__main__':
             print("Setting Data Directory to default")
             arg_data_dir = "./"
 
-    # Check if directory exists
+    # Check if data directory exists
     if (os.path.isdir(arg_data_dir)):
         # Director exists, use it
         print("Valid Data Directory Found.")
@@ -238,11 +237,12 @@ if __name__=='__main__':
         print("Given Data Directory Invalid.  Using Default.")
     sys.stderr.write("Data Directory: " + data_dir + "\n")
 
-    data_file = data_dir + "theros.txt"
+    data_file = data_dir + "myhero_options.txt"
 
     # Check if Options File Exists
     if (not os.path.isfile(data_file)):
         #File doesn't exist, copy sample
+        print("Options file missing, Creating default.  ")
         from shutil import copyfile
         copyfile("sample_heros.txt", data_file)
 
