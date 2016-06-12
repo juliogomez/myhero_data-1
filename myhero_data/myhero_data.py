@@ -13,7 +13,8 @@ import datetime, json, sys, os
 from collections import Counter
 
 app = Flask(__name__)
-data_file = "heros.txt"
+data_dir = "./"
+data_file = data_dir + "heros.txt"
 
 @app.route("/hero_list")
 def hero_list():
@@ -202,6 +203,9 @@ if __name__=='__main__':
     parser.add_argument(
         "-s", "--datasecret", help="Data Server Key Expected in API Calls", required=False
     )
+    parser.add_argument(
+        "--datadir", help="Directory to use for Data", required=False
+    )
 
     args = parser.parse_args()
 
@@ -216,6 +220,31 @@ if __name__=='__main__':
             data_key = get_data_key
     # print "Data Server Key: " + data_key
     sys.stderr.write("Data Server Key: " + data_key + "\n")
+
+
+    arg_data_dir = args.datadir
+    if (arg_data_dir == None):
+        arg_data_dir = os.getenv("myhero_data_dir")
+        if (arg_data_dir == None):
+            print("Setting Data Directory to default")
+            arg_data_dir = "./"
+
+    # Check if directory exists
+    if (os.path.isdir(arg_data_dir)):
+        # Director exists, use it
+        print("Valid Data Directory Found.")
+        data_dir = arg_data_dir
+    else:
+        print("Given Data Directory Invalid.  Using Default.")
+    sys.stderr.write("Data Directory: " + data_dir + "\n")
+
+    data_file = data_dir + "theros.txt"
+
+    # Check if Options File Exists
+    if (not os.path.isfile(data_file)):
+        #File doesn't exist, copy sample
+        from shutil import copyfile
+        copyfile("sample_heros.txt", data_file)
 
     app.run(debug=True, host='0.0.0.0', port=int("5000"))
 

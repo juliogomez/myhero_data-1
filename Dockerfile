@@ -1,5 +1,8 @@
 FROM python:2-alpine
 EXPOSE 5000
+MAINTAINER Hank Preston "hapresto@cisco.com"
+
+VOLUME ["/app/data"]
 
 # Install basic utilities
 RUN apk add -U \
