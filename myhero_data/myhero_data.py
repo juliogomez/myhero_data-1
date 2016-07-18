@@ -51,8 +51,32 @@ def results():
         for line in f:
             line = line.rstrip()
             tally[line] += 1
+
     resp = make_response(jsonify(tally))
+
     return resp
+
+@app.route("/v2/results")
+def results_v2():
+    tally = Counter()
+    with open(data_dir + "votes.txt") as f:
+        for line in f:
+            line = line.rstrip()
+            tally[line] += 1
+
+    total_votes = sum(tally.values())
+
+    tally = sorted(tally.items(), key=lambda (k, v): v, reverse=True)
+    tally = json.dumps(tally)
+    print(tally)
+
+    resp = Response(
+        tally,
+        content_type='application/json',
+        headers={"Total Votes": total_votes},
+        status=200)
+    return resp
+
 
 @app.route("/options", methods=["GET", "PUT", "POST"])
 def options_route():
@@ -206,8 +230,15 @@ if __name__=='__main__':
     parser.add_argument(
         "--datadir", help="Directory to use for Data", required=False
     )
+    parser.add_argument(
+        "--port", help="Port to listen on", required=False, default=5000
+    )
 
     args = parser.parse_args()
+
+    # Determine port number
+    listen = int(args.port)
+    print("Listen: " + str(listen))
 
     data_key = args.datasecret
     # print "Arg Data Key: " + str(data_key)
@@ -246,5 +277,5 @@ if __name__=='__main__':
         from shutil import copyfile
         copyfile("sample_heros.txt", data_file)
 
-    app.run(debug=True, host='0.0.0.0', port=int("5000"))
+    app.run(debug=True, host='0.0.0.0', port=listen)
 
