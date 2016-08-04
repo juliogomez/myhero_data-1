@@ -19,5 +19,7 @@ ADD . /app
 WORKDIR /app
 RUN pip install --requirement ./requirements.txt
 
-CMD [ "python", "./myhero_data/myhero_data.py", "-s demo" ]
+ENV myhero_data_key=demo
+
+CMD [ "python", "./myhero_data/myhero_data.py"]
 
