@@ -164,6 +164,7 @@ def option_delete_route(option):
         return resp
 
 def valid_request_check(request):
+    return (True, "")
     try:
         if request.headers["key"] == data_key:
             return (True, "")
