@@ -19,5 +19,5 @@ ADD . /app
 WORKDIR /app
 RUN pip install --requirement ./requirements.txt
 
-CMD [ "python", "./myhero_data/myhero_data.py" ]
+CMD [ "python", "./myhero_data/myhero_data.py", "-s demo" ]
 
