@@ -63,12 +63,16 @@ def results_v2():
         for line in f:
             line = line.rstrip()
             tally[line] += 1
-
-    total_votes = sum(tally.values())
+    total_votes = float(sum(tally.values()))
 
     tally = sorted(tally.items(), key=lambda (k, v): v, reverse=True)
+
+    for i, entry in enumerate(tally):
+        # Add Percentage of votes as third element in entry
+        tally[i] = list(tally[i])
+        tally[i].append((entry[1]/total_votes)*100)
+
     tally = json.dumps(tally)
-    print(tally)
 
     resp = Response(
         tally,
