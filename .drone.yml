@@ -20,10 +20,26 @@ pipeline:
       branch: master
     secrets: [ docker_username, docker_password ]
 
-  deploy:
-    image: vallard/drone-kube
-    template: deployment.yaml
-    secrets: [ KUBE_TOKEN, KUBE_CA, KUBE_SERVER ]
+  # deploy:
+  #   image: vallard/drone-kube
+  #   template: deployment.yaml
+  #   secrets: [ KUBE_TOKEN, KUBE_CA, KUBE_SERVER ]
+
+  deploy-staging:
+    image: quay.io/honestbee/drone-kubernetes
+    # kubernetes_server: ${KUBERNETES_SERVER_STAGING}
+    # kubernetes_cert: ${KUBERNETES_CERT_STAGING}
+    # kubernetes_token: ${KUBERNETES_TOKEN_STAGING}
+    deployment: myhero-data
+    repo: hpreston/myhero_data
+    container: myhero-data
+    namespace: hapresto
+    tag:
+        - "${DRONE_BUILD_NUMBER}"
+    when:
+        branch: [ dev ]
+    secrets: [ KUBERNETES_SERVER, KUBERNETES_TOKEN, KUBERNETES_CERT ]
+
 
   # notify:
   #   image: hpreston/drone-spark:0.7
