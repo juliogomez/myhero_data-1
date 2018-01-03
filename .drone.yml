@@ -6,11 +6,10 @@ pipeline:
 
   delivery:
     image: plugins/docker
-    debug: true
     repo: "${DOCKER_REPO}"
-    tag: "${DRONE_COMMIT_BRANCH##:}"
-    # username: "$${DOCKER_USERNAME}"
-    # password: "$${DOCKER_PASSWORD}"
+    tag: dev
+    when:
+      branch: dev
     secrets: [ docker_username, docker_password ]
 
   # deliveryprod:
