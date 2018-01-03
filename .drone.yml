@@ -8,7 +8,7 @@ pipeline:
     image: plugins/docker
     debug: true
     repo: "${DOCKER_REPO}"
-    tag: "${DRONE_COMMIT_BRANCH}"
+    tag: "${DRONE_COMMIT_BRANCH##:}"
     # username: "$${DOCKER_USERNAME}"
     # password: "$${DOCKER_PASSWORD}"
     secrets: [ docker_username, docker_password ]
