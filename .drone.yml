@@ -1,13 +1,14 @@
 pipeline:
-  integration:
-    image: python:2
-    commands:
-      - echo "Building"
+  # integration:
+  #   image: python:2
+  #   commands:
+  #     - echo "Building"
 
   delivery:
     image: plugins/docker
     secrets: [ DOCKER_USERNAME, DOCKER_PASSWORD ]
-    tag: "$${BRANCH##feature/}"
+    repo: "${DOCKER_REPO}"
+    tag: "${DRONE_BRANCH##feature/}"
 
   deliveryprod:
     image: plugins/docker
