@@ -7,7 +7,9 @@ pipeline:
   delivery:
     image: plugins/docker
     repo: hpreston/myhero_data
-    tags: "${DRONE_COMMIT_BRANCH}"
+    tags:
+      - "${DRONE_COMMIT_BRANCH}"
+      - "${DRONE_BUILD_NUMBER}"
     secrets: [ docker_username, docker_password ]
 
   deliveryprod:
