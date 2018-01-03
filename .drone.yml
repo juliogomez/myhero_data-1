@@ -6,17 +6,17 @@ pipeline:
 
   delivery:
     image: plugins/docker
-    repo: "$${DOCKER_REPO}"
-    # default_tags: true
+    repo: hpreston/myhero_data
+    tags: "${DRONE_COMMIT_BRANCH}"
     secrets: [ docker_username, docker_password ]
 
-  # deliveryprod:
-  #   image: plugins/docker
-  #   repo: "${DOCKER_REPO}"
-  #   tag: latest
-  #   when:
-  #     branch: master
-  #   secrets: [ docker_username, docker_password ]
+  deliveryprod:
+    image: plugins/docker
+    repo: hpreston/myhero_data
+    tag: latest
+    when:
+      branch: master
+    secrets: [ docker_username, docker_password ]
 
   notify:
     image: hpreston/drone-spark:0.7
