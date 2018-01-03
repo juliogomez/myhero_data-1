@@ -6,20 +6,23 @@ pipeline:
 
   delivery:
     image: plugins/docker
+    debug: true
     repo: "${DOCKER_REPO}"
     tag: "${DRONE_BRANCH##feature/}"
+    username: "$${DOCKER_USERNAME}"
+    password: "$${DOCKER_PASSWORD}"
     secrets: [ docker_username, docker_password ]
 
-  deliveryprod:
-    image: plugins/docker
-    tag: latest
-    when:
-      branch: master
-    secrets: [ docker_username, docker_password ]
+  # deliveryprod:
+  #   image: plugins/docker
+  #   tag: latest
+  #   when:
+  #     branch: master
+  #   secrets: [ docker_username, docker_password ]
 
-  notify:
-    image: hpreston/drone-spark:0.7
-    secrets: [ SPARK_TOKEN, PERSONEMAIL ]
-    message: "Build Complete!"
-    when:
-      status: [ success, failure ]
+  # notify:
+  #   image: hpreston/drone-spark:0.7
+  #   secrets: [ SPARK_TOKEN, PERSONEMAIL ]
+  #   message: "Build Complete!"
+  #   when:
+  #     status: [ success, failure ]
