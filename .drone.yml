@@ -7,21 +7,20 @@ pipeline:
   delivery:
     image: plugins/docker
     repo: "${DOCKER_REPO}"
-    tag: dev
-    when:
-      branch: dev
+    default_tags: true
     secrets: [ docker_username, docker_password ]
 
   # deliveryprod:
   #   image: plugins/docker
+  #   repo: "${DOCKER_REPO}"
   #   tag: latest
   #   when:
   #     branch: master
   #   secrets: [ docker_username, docker_password ]
 
-  # notify:
-  #   image: hpreston/drone-spark:0.7
-  #   secrets: [ SPARK_TOKEN, PERSONEMAIL ]
-  #   message: "Build Complete!"
-  #   when:
-  #     status: [ success, failure ]
+  notify:
+    image: hpreston/drone-spark:0.7
+    secrets: [ SPARK_TOKEN, PERSONEMAIL ]
+    message: "Build Complete!"
+    when:
+      status: [ success, failure ]
