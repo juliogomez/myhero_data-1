@@ -6,7 +6,7 @@ pipeline:
 
   delivery:
     image: plugins/docker
-    repo: "${DOCKER_REPO}"
+    repo: "$${DOCKER_REPO}"
     # default_tags: true
     secrets: [ docker_username, docker_password ]
 
