@@ -9,8 +9,8 @@ pipeline:
     debug: true
     repo: "${DOCKER_REPO}"
     tag: "${DRONE_BRANCH##feature/}"
-    username: "$${DOCKER_USERNAME}"
-    password: "$${DOCKER_PASSWORD}"
+    # username: "$${DOCKER_USERNAME}"
+    # password: "$${DOCKER_PASSWORD}"
     secrets: [ docker_username, docker_password ]
 
   # deliveryprod:
