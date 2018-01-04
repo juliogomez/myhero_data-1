@@ -10,7 +10,7 @@ pipeline:
       - env
       - echo $K8S_SERVER
       - echo $K8S_TOKEN
-      - sudo kubectl --server=$K8S_SERVER --token=$K8S_TOKEN --certificate-authority=devx-cluster-ca.txt --namespace=hapresto get pods
+      - kubectl --kubeconfig="" --server=$K8S_SERVER --token=$K8S_TOKEN --certificate-authority=devx-cluster-ca.txt --namespace=hapresto get pods
     secrets: [ K8S_SERVER, K8S_TOKEN ]
 
 
