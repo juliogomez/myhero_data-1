@@ -20,10 +20,18 @@ pipeline:
       branch: master
     secrets: [ docker_username, docker_password ]
 
+  # deploy:
+  #   image: vallard/drone-kube
+  #   template: deployment.yaml
+  #   secrets: [ KUBE_TOKEN, KUBE_CA, KUBE_SERVER ]
+
   deploy:
-    image: vallard/drone-kube
-    template: deployment.yaml
-    secrets: [ KUBE_TOKEN, KUBE_CA, KUBE_SERVER ]
+    image: hpreston/drone-ansible-netdevops
+    commands:
+      - sed -e "s/{{ build.number }}/${DRONE_BUILD_NUMBER}/g" deployment.yaml > deployment_push.yaml
+      - "kubectl --server=${K8S_SERVER} --token=${K8S_TOKEN} --certificate-authority=devx-cluster-ca.txt apply -f deployment_push.yaml"
+    secrets: [ K8S_SERVER, K8S_TOKEN ]
+
 
   # deploy-staging:
   #   image: quay.io/honestbee/drone-kubernetes
