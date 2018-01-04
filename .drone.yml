@@ -5,7 +5,7 @@ pipeline:
   #     - echo "Building"
 
   test:
-    image: wernight/kubectl
+    image: hpreston/drone-ansible-netdevops
     commands:
       - env
       - echo $K8S_SERVER
