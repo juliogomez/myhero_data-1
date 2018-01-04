@@ -8,7 +8,9 @@ pipeline:
     image: wernight/kubectl
     commands:
       - env
-      - "kubectl --server=$${K8S_SERVER} --token=$${K8S_TOKEN} --certificate-authority=devx-cluster-ca.txt --namespace=hapresto get pods"
+      - echo ${K8S_SERVER}
+      - echo ${K8S_TOKEN}
+      - kubectl --server=$${K8S_SERVER} --token=$${K8S_TOKEN} --certificate-authority=devx-cluster-ca.txt --namespace=hapresto get pods
     secrets: [ K8S_SERVER, K8S_TOKEN ]
 
 
