@@ -4,15 +4,15 @@ pipeline:
   #   commands:
   #     - echo "Building"
 
-  test:
-    image: hpreston/drone-ansible-netdevops
-    commands:
-      - env
-      - echo $K8S_SERVER
-      - echo $K8S_TOKEN
-      - kubectl --server=$K8S_SERVER --token=$K8S_TOKEN --certificate-authority=devx-cluster-ca.txt --namespace=hapresto get pods
-    secrets: [ K8S_SERVER, K8S_TOKEN ]
-
+  # test:
+  #   image: hpreston/drone-ansible-netdevops
+  #   commands:
+  #     - env
+  #     - echo $K8S_SERVER
+  #     - echo $K8S_TOKEN
+  #     - kubectl --server=$K8S_SERVER --token=$K8S_TOKEN --certificate-authority=devx-cluster-ca.txt --namespace=hapresto get pods
+  #   secrets: [ K8S_SERVER, K8S_TOKEN ]
+  #
 
   delivery:
     image: plugins/docker
@@ -35,13 +35,13 @@ pipeline:
   #   template: deployment.yaml
   #   secrets: [ KUBE_TOKEN, KUBE_CA, KUBE_SERVER ]
 
-  deploy:
-    image: wernight/kubectl
-    commands:
-      - sed -e "s/{{ build.number }}/${DRONE_BUILD_NUMBER}/g" deployment.yaml > deployment_push.yaml
-      - "kubectl --server=$${K8S_SERVER} --token=$${K8S_TOKEN} --certificate-authority=devx-cluster-ca.txt apply -f deployment_push.yaml"
-    secrets: [ K8S_SERVER, K8S_TOKEN ]
-
+  # deploy:
+  #   image: wernight/kubectl
+  #   commands:
+  #     - sed -e "s/{{ build.number }}/${DRONE_BUILD_NUMBER}/g" deployment.yaml > deployment_push.yaml
+  #     - "kubectl --server=$${K8S_SERVER} --token=$${K8S_TOKEN} --certificate-authority=devx-cluster-ca.txt apply -f deployment_push.yaml"
+  #   secrets: [ K8S_SERVER, K8S_TOKEN ]
+  #
 
   # deploy-staging:
   #   image: quay.io/honestbee/drone-kubernetes
@@ -58,10 +58,9 @@ pipeline:
   #       branch: [ dev ]
   #   secrets: [ KUBERNETES_SERVER, KUBERNETES_TOKEN, KUBERNETES_CERT ]
 
-
-  # notify:
-  #   image: hpreston/drone-spark:0.7
-  #   secrets: [ SPARK_TOKEN, PERSONEMAIL ]
-  #   message: "Build Complete!"
-  #   when:
-  #     status: [ success, failure ]
+  notify:
+    image: hpreston/drone-spark:0.7
+    secrets: [ SPARK_TOKEN, PERSONEMAIL ]
+    message: "Build Complete!"
+    when:
+      status: [ success, failure ]
