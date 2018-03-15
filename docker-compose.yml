@@ -1,0 +1,12 @@
+version: '2'
+services:
+  myhero-data:
+    build: .
+    image: <your_DockerHub_user>/myhero-data
+    ports:
+     - "15000:5000"
+    volumes:
+     - .:/app/data
+    environment:
+     -  myhero_data_key=${MYHERO_DATA_KEY}
+     -  myhero_data_dir=/app/data/

@@ -3,11 +3,11 @@
 This is the Data Service for a basic microservice demo application.
 This provides a data storage layer for a voting system where users can vote for their favorite movie superhero.
 
-Details on deploying the entire demo to a Mantl cluster can be found at
+Details on deploying the entire demo to a Kubernetes cluster can be found at
 
-* MyHero Demo - [hpreston/myhero_demo](https://github.com/hpreston/myhero_demo)
+* DevOps tutorial - [juliogomez/devops](https://github.com/juliogomez/devops)
 
-The application was designed to provide a simple demo for Cisco Mantl.  It is written as a simple Python Flask application and deployed as a docker container.
+The application was designed to provide a simple demo for Kubernetes.  It is written as a simple Python Flask application and deployed as a docker container.
 
 Other services are:
 
@@ -111,3 +111,18 @@ To start local development run:
   - Environment Variables are configured in Vagrantfile for development
 
 Each of the services in the application (i.e. myhero_web, myhero_app, and myhero_data) include Vagrant support to allow working locally on all three simultaneously.
+
+# Local Development with docker-compose
+
+I've included the configuration files needed to do local development with docker-compose in the repo.  docker-compose will still use Docker for local development and requires the following be installed on your laptop: 
+
+* [Docker](https://www.docker.com/community-edition)
+
+To start local development run:
+
+* `docker-compose up`
+*  Now you can interact with the API or interface at localhost:15000 (configured in docker-compose.yml)
+  - example:  from your local machine `curl -H "key: DevData" http://localhost:15000/options`
+  - Environment Variables are configured in .env for development
+
+Each of the services in the application (i.e. myhero_web, myhero_app, and myhero_data) include docker-compose support to allow working locally on all three simultaneously.

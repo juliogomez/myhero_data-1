@@ -1,11 +1,13 @@
-FROM python:2-alpine
+FROM alpine
 EXPOSE 5000
 MAINTAINER Hank Preston "hapresto@cisco.com"
 
 VOLUME ["/app/data"]
 
-# Install basic utilities
+# Install python, pip and basic utilities
 RUN apk add -U \
+        python \
+        py-pip \
         ca-certificates \
   && rm -rf /var/cache/apk/* \
   && pip install --no-cache-dir \
